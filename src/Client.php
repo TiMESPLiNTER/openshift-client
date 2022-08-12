@@ -2,7 +2,6 @@
 
 namespace UniversityOfAdelaide\OpenShift;
 
-use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
 use UniversityOfAdelaide\OpenShift\Objects\Backups\Backup;
 use UniversityOfAdelaide\OpenShift\Objects\Backups\BackupList;
@@ -18,6 +17,7 @@ use UniversityOfAdelaide\OpenShift\Objects\Label;
 use UniversityOfAdelaide\OpenShift\Objects\NetworkPolicy;
 use UniversityOfAdelaide\OpenShift\Objects\StatefulSet;
 use UniversityOfAdelaide\OpenShift\Serializer\OpenShiftSerializerFactory;
+use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 
 /**
  * Class Client.
@@ -44,16 +44,9 @@ class Client implements ClientInterface {
   private $namespace;
 
   /**
-   * Base url to OpenShift.
-   *
-   * @var string
-   */
-  private $host;
-
-  /**
    * Guzzle HTTP Client.
    *
-   * @var \GuzzleHttp\Client
+   * @var GuzzleClientInterface
    */
   protected $guzzleClient;
 
@@ -432,17 +425,9 @@ class Client implements ClientInterface {
   /**
    * {@inheritdoc}
    */
-  public function __construct($host, $token, $namespace, $verifyTls = TRUE) {
-    $this->host = $host;
+  public function __construct(GuzzleClientInterface $guzzleClient, $namespace) {
+    $this->guzzleClient = $guzzleClient;
     $this->namespace = $namespace;
-    $this->guzzleClient = new GuzzleClient([
-      'verify' => $verifyTls,
-      'base_uri' => $host,
-      'headers' => [
-        'Authorization' => 'Bearer ' . $token,
-        'Accept' => 'application/json',
-      ],
-    ]);
     $this->serializer = OpenShiftSerializerFactory::create();
   }
 

@@ -12,6 +12,7 @@ use UniversityOfAdelaide\OpenShift\Objects\Route;
 use UniversityOfAdelaide\OpenShift\Objects\Label;
 use UniversityOfAdelaide\OpenShift\Objects\NetworkPolicy;
 use UniversityOfAdelaide\OpenShift\Objects\StatefulSet;
+use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 
 /**
  * Interface OpenShiftClientInterface.
@@ -20,19 +21,11 @@ use UniversityOfAdelaide\OpenShift\Objects\StatefulSet;
  */
 interface ClientInterface {
 
-  /**
-   * Client constructor.
-   *
-   * @param string $host
-   *   The hostname.
-   * @param string $token
-   *   A generated Auth token.
-   * @param string $namespace
-   *   Namespace/project on which to operate methods on.
-   * @param bool $verifyTls
-   *   TLS certificates are verified by default.
-   */
-  public function __construct($host, $token, $namespace, $verifyTls = TRUE);
+    /**
+     * @param GuzzleClientInterface $guzzleClient
+     * @param string $namespace
+     */
+    public function __construct(GuzzleClientInterface $guzzleClient, $namespace);
 
   /**
    * Sends a request via the guzzle http client.
